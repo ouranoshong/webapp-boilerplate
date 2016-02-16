@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "gulp serve"
+    "start": "gulp serve",
+    "build": "gulp build",
+    "clean": "gulp clean"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +18,9 @@
     "babel-preset-react": "^6.3.13",
     "browser-sync": "^2.11.1",
     "gulp": "^3.9.1",
+    "gulp-dest-clean": "^0.5.0",
+    "gulp-load-plugins": "^1.2.0",
+    "html-webpack-plugin": "^2.8.1",
     "path": "^0.12.7",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.13",
