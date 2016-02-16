@@ -13,6 +13,7 @@ var sourcePath = path.resolve(__dirname, './src');
 gulp.task('serve', ["webpack:build-dev"], function() {
 
     browserSync.init({
+        host: "0.0.0.0",
         server: buildPath,
         open: false
     });
@@ -40,7 +41,7 @@ gulp.task("webpack:build", function(callback) {
             }
         }),
         new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.UglifyJsPlugin(),
+        new webpack.optimize.UglifyJsPlugin()
     );
 
     // run webpack
