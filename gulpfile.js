@@ -2,30 +2,24 @@ var gulp = require("gulp");
 var gutil = require("gulp-util");
 var webpack = require("webpack");
 var gulpPlugins = require("gulp-load-plugins")();
-var browserSync = require('browser-sync').create();
 var WebpackDevServer = require("webpack-dev-server");
+var BrowserSyncPlugin = require("browser-sync-webpack-plugin");
 var webpackConfig = require("./webpack.config.js");
 var path = require('path');
 
 var buildPath = path.resolve(__dirname, './build');
 var sourcePath = path.resolve(__dirname, './src');
 
-gulp.task('serve', ["webpack:build-dev"], function() {
+var browsersyncConfigs = {
+    host: 'localhost',
+    port: 3000,
+    server: {
+        baseDir: [buildPath]
+    },
+    open: false
+};
 
-    browserSync.init({
-        host: "0.0.0.0",
-        server: buildPath,
-        open: false
-    });
-
-    gulp.watch(["src/**/*"], ["webpack:build-dev"]).on('change', browserSync.reload);
-});
-
-gulp.task("default", ["serve"]);
-
-gulp.task("build-dev", ["webpack:build-dev"], function() {
-    gulp.watch(["src/**/*"], ["webpack:build-dev"]);
-});
+gulp.task("default", ["webpack:build-dev"]);
 
 // Production build
 gulp.task("build", ["webpack:build"]);
@@ -59,15 +53,22 @@ gulp.task("webpack:build-dev", function(callback) {
     myDevConfig.devtool = "sourcemap";
     myDevConfig.debug = true;
 
+    myDevConfig.plugins = myDevConfig.plugins.concat(
+        new BrowserSyncPlugin(browsersyncConfigs)
+    );
+
     // create a single instance of the compiler to allow caching
     var devCompiler = webpack(myDevConfig);
     // run webpack
-    devCompiler.run(function(err, stats) {
+    devCompiler.watch({ // watch options:
+        aggregateTimeout: 300, // wait so long for more changes
+        poll: true // use polling instead of native watchers
+            // pass a number to set the polling interval
+    }, function(err, stats) {
         if (err) throw new gutil.PluginError("webpack:build-dev", err);
         gutil.log("[webpack:build-dev]", stats.toString({
             colors: true
         }));
-        callback();
     });
 });
 
