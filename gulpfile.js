@@ -75,18 +75,40 @@ gulp.task("webpack:build-dev", function(callback) {
 gulp.task("webpack-dev-server", function(callback) {
     // modify some webpack config options
     var myConfig = Object.create(webpackConfig);
+    var myBrowserSyncConfigs = Object.create(browsersyncConfigs);
+    var serverConfigs = {
+        host: 'localhost',
+        port: 8000
+    };
     myConfig.devtool = "eval";
     myConfig.debug = true;
+    myConfig.entry.bundle.unshift(
+        "webpack-dev-server/client?http://localhost:8000",
+        "webpack/hot/dev-server"
+    );
+    
+    myBrowserSyncConfigs.proxy = 'http://localhost:8000';
+
+    myConfig.plugins = myConfig.plugins.concat(
+        new BrowserSyncPlugin(myBrowserSyncConfigs, {
+            reload: false,
+            open: false
+        }),
+        new webpack.HotModuleReplacementPlugin()
+    );
 
     // Start a webpack-dev-server
     new WebpackDevServer(webpack(myConfig), {
-        publicPath: "/" + myConfig.output.publicPath,
+        publicPath: myConfig.output.publicPath,
+        contentBase: myConfig.output.path,
+        hot: true,
+        inline: true,
         stats: {
             colors: true
         }
-    }).listen(8080, "localhost", function(err) {
+    }).listen(8000, "localhost", function(err) {
         if (err) throw new gutil.PluginError("webpack-dev-server", err);
-        gutil.log("[webpack-dev-server]", "http://localhost:8080/webpack-dev-server/index.html");
+        gutil.log("[webpack-dev-server]", "http://localhost:8000/index.html");
     });
 });
 
