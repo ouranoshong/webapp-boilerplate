@@ -1,5 +1,8 @@
-require('./main.css');
-document.write('<h1>Hello World!</h1>');
-// document.append('<h1>Hello Demo App</h1>');
-// console.log('Hello World');
-// console.log('Hello World2');
+import React from 'react';
+import ReactDom from 'react-dom';
+import App from './app.jsx';
+
+ReactDom.render(
+    <App />,
+    document.getElementById("app-mount-point")
+);
