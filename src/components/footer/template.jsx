@@ -1,7 +1,9 @@
 import React from 'react';
 
-const render = ()=> (
-    <div className="component">Footer</div>
-);
+const render = function() {
+    return (
+        <div className="component">Footer</div>
+    );
+};
 
 export default render;
